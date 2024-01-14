@@ -22,7 +22,7 @@
      <rect>
       <x>9</x>
       <y>9</y>
-      <width>259</width>
+      <width>299</width>
       <height>56</height>
      </rect>
     </property>
@@ -74,7 +74,46 @@
        </property>
       </widget>
      </item>
+     <item row="1" column="1">
+      <widget class="QPushButton" name="stack_btn">
+       <property name="text">
+        <string>chg_stk_pg</string>
+       </property>
+      </widget>
+     </item>
     </layout>
+   </widget>
+   <widget class="QPushButton" name="nogi_btn">
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>130</y>
+      <width>75</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="cursor">
+     <cursorShape>PointingHandCursor</cursorShape>
+    </property>
+    <property name="text">
+     <string>nogi</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="hina_btn">
+    <property name="geometry">
+     <rect>
+      <x>210</x>
+      <y>130</y>
+      <width>75</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="cursor">
+     <cursorShape>PointingHandCursor</cursorShape>
+    </property>
+    <property name="text">
+     <string>hinata</string>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

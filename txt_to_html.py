@@ -44,7 +44,7 @@ def txt_to_html(file_path):
         # max_width = "896px"
         for line in file:
             if line.strip().endswith(".jpg"):
-                image_path = line.strip()
+                image_path = "blog_source/"+line.strip()
                 # html_content += f"<img src='{image_path}' style=\"max-width: {max_width};\"><br>"
                 html_content += f"<img src='{image_path}' /><br>"
             else:
