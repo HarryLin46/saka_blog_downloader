@@ -30,17 +30,18 @@ def update_nogi():
 
     #send request
     response = requests.get(url)
-    if response.status_code == 200:
-        html = response.text
-        with open('member/nogi/member_source_nogi.txt', 'w', encoding='utf-8') as file:
-            file.write(html)
-        # print(html)
-    else:
-        print("get member source faild，error code：", response.status_code)
+    # if response.status_code == 200:
+    #     html = response.text
+    #     with open('member/nogi/member_source_nogi.txt', 'w', encoding='utf-8') as file:
+    #         file.write(html)
+    #     # print(html)
+    # else:
+    #     print("get member source faild，error code：", response.status_code)
 
-    with open('member/nogi/member_source_nogi.txt', "r", encoding='utf-8') as f:
-        text = f.read()
-    raw_data = text[text.find('{'):text.rfind('}')+1]
+    # with open('member/nogi/member_source_nogi.txt', "r", encoding='utf-8') as f:
+    #     text = f.read()
+    html_txt = response.text
+    raw_data = html_txt[html_txt.find('{'):html_txt.rfind('}')+1]
     data_list = json.loads(raw_data)
     load_member_image(data_list)
     prepare_member_list(data_list)

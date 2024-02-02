@@ -31,7 +31,7 @@ class nogi_member_window(QMainWindow):
         # self.member_lbls = {}
         posi_x = 10
         posi_y = 10
-        with open("concerned_member_nogi.txt", "r", encoding="utf-8") as file:
+        with open("member/nogi/concerned_member_nogi.txt", "r", encoding="utf-8") as file:
             concerned_members = file.read()
         with open("member/nogi/member_list.txt", 'r', encoding='utf-8') as file:
             for line in file:
@@ -84,7 +84,7 @@ class nogi_member_window(QMainWindow):
             self.lbl_name.setStyleSheet( "color: red;")
 
     def save_concerned_member(self):
-        with open('concerned_member_nogi.txt', 'w', encoding='utf-8') as file:
+        with open('member/nogi/concerned_member_nogi.txt', 'w', encoding='utf-8') as file:
             for child in self.member_widget.findChildren(QLabel):
                 lbl_name = child.objectName() #ex.遠藤 さくらlbl
                 self.lbl_name = self.member_widget.findChild(QLabel, lbl_name)
@@ -123,6 +123,8 @@ class hina_member_window(QMainWindow):
         # self.member_lbls = {}
         posi_x = 10
         posi_y = 10
+        with open("member/hinata/concerned_member_hinata.txt", "r", encoding="utf-8") as file:
+            concerned_members = file.read()
         with open("member/hinata/member_list.txt", 'r', encoding='utf-8') as file:
             for line in file:
                 name = line.strip() #ex.遠藤 さくら
@@ -140,8 +142,11 @@ class hina_member_window(QMainWindow):
                 # set member picture as the button pattern
                 self.btn_name.setStyleSheet(f"QPushButton {{ border-image: url('member/hinata/{name}.jpg') 0; }}")
 
-                # initially, it's black
-                self.lbl_name.setStyleSheet("QLabel { color: black; }")
+                # initially, it's red-black relative to concerned member
+                if name in concerned_members:
+                    self.lbl_name.setStyleSheet("QLabel { color: red; }")
+                else:
+                    self.lbl_name.setStyleSheet("QLabel { color: black; }")
 
                 # click event
                 self.btn_name.clicked.connect(self.change_label_color)
@@ -171,7 +176,7 @@ class hina_member_window(QMainWindow):
             self.lbl_name.setStyleSheet( "color: red;")
 
     def save_concerned_member(self):
-        with open('concerned_member_hinata.txt', 'w', encoding='utf-8') as file:
+        with open('member/hinata/concerned_member_hinata.txt', 'w', encoding='utf-8') as file:
             for child in self.member_widget.findChildren(QLabel):
                 lbl_name = child.objectName() #ex.遠藤 さくらlbl
                 self.lbl_name = self.member_widget.findChild(QLabel, lbl_name)
@@ -210,6 +215,8 @@ class saku_member_window(QMainWindow):
         # self.member_lbls = {}
         posi_x = 10
         posi_y = 10
+        with open("member/sakura/concerned_member_sakura.txt", "r", encoding="utf-8") as file:
+            concerned_members = file.read()
         with open("member/sakura/member_list.txt", 'r', encoding='utf-8') as file:
             for line in file:
                 name = line.strip() #ex.遠藤 さくら
@@ -227,8 +234,11 @@ class saku_member_window(QMainWindow):
                 # set member picture as the button pattern
                 self.btn_name.setStyleSheet(f"QPushButton {{ border-image: url('member/sakura/{name}.jpg') 0; }}")
 
-                # initially, it's black
-                self.lbl_name.setStyleSheet("QLabel { color: black; }")
+                # initially, it's red-black relative to concerned member
+                if name in concerned_members:
+                    self.lbl_name.setStyleSheet("QLabel { color: red; }")
+                else:
+                    self.lbl_name.setStyleSheet("QLabel { color: black; }")
 
                 # click event
                 self.btn_name.clicked.connect(self.change_label_color)
@@ -258,7 +268,7 @@ class saku_member_window(QMainWindow):
             self.lbl_name.setStyleSheet( "color: red;")
 
     def save_concerned_member(self):
-        with open('concerned_member_sakura.txt', 'w', encoding='utf-8') as file:
+        with open('member/sakura/concerned_member_sakura.txt', 'w', encoding='utf-8') as file:
             for child in self.member_widget.findChildren(QLabel):
                 lbl_name = child.objectName() #ex.遠藤 さくらlbl
                 self.lbl_name = self.member_widget.findChild(QLabel, lbl_name)
