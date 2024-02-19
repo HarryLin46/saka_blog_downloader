@@ -95,6 +95,42 @@
      <string>wanted_member</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="update_mem_btn">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>510</y>
+      <width>111</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>update_member</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="crawling_btn">
+    <property name="geometry">
+     <rect>
+      <x>150</x>
+      <y>90</y>
+      <width>161</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Update blogs!!</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="member_cbbox">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>200</y>
+      <width>91</width>
+      <height>22</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
  </widget>
  <resources/>

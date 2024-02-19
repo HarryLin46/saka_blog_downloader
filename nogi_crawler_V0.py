@@ -1,17 +1,17 @@
 import requests,bs4,os,json,time
-from txt_to_html import resize_pictures,prepare_html
 
 ##download HTML
 url = 'https://www.nogizaka46.com/s/n46/diary/MEMBER/list?ima=0107&ct=48006/s/n46/diary/detail/100509?ima=2301&cd=MEMBER'
-# url = "https://www.nogizaka46.com/s/n46/diary/MEMBER?ima=1530"
 
+##create Nogizaka directory
+deskDir = 'Nogizaka46'
+os.makedirs(deskDir,exist_ok=True)
 
 ## create member list
-member_list = []
-with open("member/nogi/member_list.txt",'r',encoding='utf-8') as file:
-    for member in file:
-        member_list.append(member.rstrip("\n"))
+fn = 'member_list.json'
 
+with open(fn,'r',encoding='utf-8') as fnobj:
+    member_list = json.load(fnobj)
 # print(member_list)
 
 
@@ -56,11 +56,7 @@ def download_pictures(blog_url,blog_index):
     
     data = [dateTime,author_member,blog_title]
         
-    # print("data: ",data)
-    # print("current_new: ",current_new)
-    # print(data[0]==current_new[0],data[1]==current_new[1],data[2]==current_new[2])
-    if data[0]==current_new[0] and data[1]==current_new[1]: #we can stop here
-        # print("download_complete become True")
+    if data == current_new: #we can stop here
         download_complete = True
     else:
         #blog_title may not a good directory name
@@ -69,7 +65,7 @@ def download_pictures(blog_url,blog_index):
         for i in special_char:
             blog_title = blog_title.replace(i,'')
 
-        dir_path_member = 'blog_source/Nogizaka46/' + author_member
+        dir_path_member = './Nogizaka46/' + author_member
         
         if author_member[-5:] == '期生リレー':
             member = blog_title.split()[-1]
@@ -77,19 +73,18 @@ def download_pictures(blog_url,blog_index):
                 member = ''.join(blog_title.split()[-2:])
                 if not member in member_list:
                     print('成員名字找錯')
-            dir_path = 'blog_source/Nogizaka46/' + author_member + '/' + member
+            dir_path = './Nogizaka46/' + author_member + '/' + member
             os.makedirs(dir_path,exist_ok=True)
                 
-            dir_path = 'blog_source/Nogizaka46/' + author_member + '/' + member + '/' + date + ' ' + blog_title
+            dir_path = './Nogizaka46/' + author_member + '/' + member + '/' + date + ' ' + blog_title
         else:
-            dir_path = 'blog_source/Nogizaka46/' + author_member + '/' + date + ' ' + blog_title
+            dir_path = './Nogizaka46/' + author_member + '/' + date + ' ' + blog_title
 
         
         #the space at the end of blog_title should be remove
         dir_path = dir_path.rstrip(' .')
         
         os.makedirs(dir_path_member,exist_ok=True)
-        print(dir_path)
         if os.path.exists(dir_path) == False:
             os.makedirs(dir_path)
             if len(imgTag) > 0 :
@@ -119,7 +114,6 @@ def download_pictures(blog_url,blog_index):
             print('看到重複的部落格了')
             
 def update_current_new(current_new_url):
-    global current_new,download_complete,current_page
     html = requests.get(current_new_url)
     time.sleep(1)
     objSoup = bs4.BeautifulSoup(html.text,'lxml')
@@ -132,7 +126,7 @@ def update_current_new(current_new_url):
     
     current_new_data = [dateTime,author_member,blog_title]
     
-    fn = 'blog_source/Nogizaka46/current_new.json'
+    fn = 'current_new.json'
     with open(fn,'w',encoding='utf-8') as obj:
         json.dump(current_new_data,obj,ensure_ascii=False)
 
@@ -146,53 +140,44 @@ def download_blogs(current_objSoup):
         
         if not download_complete:
             download_pictures(blog_url,i)
-            if not download_complete: #it may be True after running download_pictures()
-                prepare_html(blog_url)
-        else:
-            break
-
         
         if current_page == 1 and i == 0: #always update first
             update_current_new(blog_url)
 
+
+##set some parameters
+current_page = 1
+current_url = url
+
+download_complete = False
+
+##get current new
+fn = 'current_new.json'
+
+try:
+    with open(fn,'r',encoding='utf-8') as fnobj:
+        current_new = json.load(fnobj)
+
+except Exception: #the 1st run of this code
+    current_new = ''
+
 ##Run!!
-def nogi_crawling():
-    global current_new,current_page,download_complete
-    ##set some parameters
-    current_page = 1
-    current_url = 'https://www.nogizaka46.com/s/n46/diary/MEMBER/list?ima=0107&ct=48006/s/n46/diary/detail/100509?ima=2301&cd=MEMBER'
-
-    download_complete = False
-
-    ##get current new
-    fn = 'blog_source/Nogizaka46/current_new.json'
-
+while not download_complete:
+    print(current_page)
+    html = requests.get(current_url)
+    current_objSoup = bs4.BeautifulSoup(html.text,'lxml')
     try:
-        with open(fn,'r',encoding='utf-8') as fnobj:
-            current_new = json.load(fnobj)
-
-    except Exception: #the 1st run of this code
-        current_new = ''
-
-    while not download_complete:
-        print(current_page)
-        html = requests.get(current_url)
-        current_objSoup = bs4.BeautifulSoup(html.text,'lxml')
-        try:
-            download_blogs(current_objSoup)
-        except FileExistsError as e:
-            print('檔案已存在! 載到重複的部落格')
-            break
-        except FileNotFoundError as e:
-            print('檔案找不到! 可能部落格名稱太長或路徑有錯')
-            break
-        except NotADirectoryError as e:
-            print('目錄名稱無效! 可能資料夾命名不合法')
-            break
-        except Exception as e:
-            print( e,'可能為異常個案')
-        # download_blogs(current_objSoup)
-        if not download_complete:
-            current_url = get_next_page(current_objSoup)
-    print("Download complete!")
-
+        download_blogs(current_objSoup)
+    except FileExistsError as e:
+        print('檔案已存在! 載到重複的部落格')
+        break
+    except FileNotFoundError as e:
+        print('檔案找不到! 可能部落格名稱太長或路徑有錯')
+        break
+    except NotADirectoryError as e:
+        print('目錄名稱無效! 可能資料夾命名不合法')
+        break
+    except Exception as e:
+        print( e,'可能為異常個案')
+    current_url = get_next_page(current_objSoup)
+print("Download complete!")

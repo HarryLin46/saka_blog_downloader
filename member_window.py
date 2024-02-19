@@ -111,12 +111,16 @@ class hina_member_window(QMainWindow):
         self.entered_btn.clicked.connect(self.return_to_main)
 
         self.member_widget = QWidget(self)
-        self.member_widget.setGeometry(80, 60, 1020, 470)
+        self.member_widget.setGeometry(80, 20, 1020, 550)
         self.setStyleSheet("QWidget { border: 2px solid black; }")
 
-        #cal member's width and height: 290*350 pixel for picture
+        #cal member's width and height: 232*320 pixel for picture
         #width: (1020-10-10-9*5)/10 = 96
-        #height: (470-10-10-8*3)/3 = 142 (116+26)
+        #height: (470-10-10-8*3)/3 = 142 (132+10) -> too big!, height isn't enough 
+
+        #v2:
+        #width = 88
+        #height = 142(120+21)
 
         #run for loop, create member buttons
         # self.member_btns = {}
@@ -132,12 +136,12 @@ class hina_member_window(QMainWindow):
                 lbl_name = name + "lbl"
                 self.btn_name = QPushButton(self.member_widget)
                 self.btn_name.setObjectName(btn_name)
-                self.btn_name.setGeometry(posi_x,posi_y,96,116)
+                self.btn_name.setGeometry(posi_x,posi_y,88,120)
                 self.btn_name.setCursor(Qt.PointingHandCursor)
                 self.lbl_name = QLabel(name,self.member_widget)
                 self.lbl_name.setObjectName(lbl_name)
                 self.lbl_name.adjustSize()
-                self.lbl_name.setGeometry(posi_x,posi_y+116+5,96,21) #space 5 between picture and txt
+                self.lbl_name.setGeometry(posi_x,posi_y+120+5,88,21) #space 5 between picture and txt
 
                 # set member picture as the button pattern
                 self.btn_name.setStyleSheet(f"QPushButton {{ border-image: url('member/hinata/{name}.jpg') 0; }}")
@@ -154,10 +158,10 @@ class hina_member_window(QMainWindow):
                 # self.member_btns[btn_name] = self.btn_name
                 # self.member_lbls[lbl_name] = self.lbl_name
 
-                posi_x += 96+5
+                posi_x += 88+5
                 if posi_x>1000:
                     posi_x = 10 #next row
-                    posi_y += 142
+                    posi_y += 142+10
 
     def change_label_color(self):
         button = self.sender() #is a btn object
@@ -206,9 +210,9 @@ class saku_member_window(QMainWindow):
         self.member_widget.setGeometry(80, 60, 1020, 470)
         self.setStyleSheet("QWidget { border: 2px solid black; }")
 
-        #cal member's width and height: 290*350 pixel for picture
+        #cal member's width and height: 253*319 pixel for picture
         #width: (1020-10-10-9*5)/10 = 96
-        #height: (470-10-10-8*3)/3 = 142 (116+26)
+        #height: (470-10-10-8*3)/3 = 142 (121+21)
 
         #run for loop, create member buttons
         # self.member_btns = {}
@@ -224,12 +228,12 @@ class saku_member_window(QMainWindow):
                 lbl_name = name + "lbl"
                 self.btn_name = QPushButton(self.member_widget)
                 self.btn_name.setObjectName(btn_name)
-                self.btn_name.setGeometry(posi_x,posi_y,96,116)
+                self.btn_name.setGeometry(posi_x,posi_y,96,121)
                 self.btn_name.setCursor(Qt.PointingHandCursor)
                 self.lbl_name = QLabel(name,self.member_widget)
                 self.lbl_name.setObjectName(lbl_name)
                 self.lbl_name.adjustSize()
-                self.lbl_name.setGeometry(posi_x,posi_y+116+5,96,21) #space 5 between picture and txt
+                self.lbl_name.setGeometry(posi_x,posi_y+121+5,96,21) #space 5 between picture and txt
 
                 # set member picture as the button pattern
                 self.btn_name.setStyleSheet(f"QPushButton {{ border-image: url('member/sakura/{name}.jpg') 0; }}")
@@ -249,7 +253,7 @@ class saku_member_window(QMainWindow):
                 posi_x += 96+5
                 if posi_x>1000:
                     posi_x = 10 #next row
-                    posi_y += 142
+                    posi_y += 142 + 5
 
     def change_label_color(self):
         button = self.sender() #is a btn object

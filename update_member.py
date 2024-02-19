@@ -1,5 +1,6 @@
 import json
 import requests
+import bs4
 
 ## Nogi part
 ##load member's image
@@ -131,8 +132,8 @@ def update_sakura():
     load_sakura_image(member_list)
     prepare_sakura_list(member_list)
 
-if __name__ == '__main__':
-    update_nogi()
+# if __name__ == '__main__':
+#     update_nogi()
 
     
 
