@@ -6,14 +6,14 @@ import tempfile
 import requests,bs4
 import time
 
-def resize_pictures(original_html,dir_path): 
+def resize_pictures(original_html): 
     # find all imgs
     img_tags = re.findall(r'<img src=[\'"](.*?)[\'"]', original_html)
 
     new_html = original_html
     for img_path in img_tags:
-        # print(img_path)
-        img_path = os.path.join(dir_path,img_path)
+        # print("img_path:",img_path)
+        # img_path = os.path.join(dir_path,img_path)
         with Image.open(img_path) as img:
             # resize the img
             target_width = 896
@@ -82,7 +82,14 @@ def prepare_html(url): #we need to modify the link of the images
 
 
     author_member = objSoup.find('p',class_ = 'bd--prof__name f--head').text
-    
+    #if the member is don't care, then skip
+    with open('./member/nogi/concerned_member_nogi.txt', 'r', encoding='utf-8') as file:
+        concerned_members = file.read().splitlines()
+        concerned_members_no_space = [re.sub(r'\s+', '', member) for member in concerned_members]
+        author_member_no_space = re.sub(r'\s+', '', author_member)
+        if not author_member_no_space in concerned_members_no_space:
+            return
+            
     blog_title = objSoup.find('h1', class_ = 'bd--hd__ttl f--head a--tx js-tdi').text
     if blog_title is None:
         blog_title = ''
@@ -137,9 +144,10 @@ def prepare_html(url): #we need to modify the link of the images
     # print(article)
     
     # print(article)
-    new_article = resize_pictures(str(article),dir_path)
+    # new_article = resize_pictures(str(article),dir_path)
+    # print(new_article)
     with open(os.path.join(dir_path,'blog_article.html'), 'w', encoding='utf-8') as file:
-        file.write(str(new_article))
+        file.write(str(article))
 
     # return new_html_content
 

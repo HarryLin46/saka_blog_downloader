@@ -1,5 +1,6 @@
 import requests,bs4,os,json,time
 from txt_to_html import resize_pictures,prepare_html
+import re
 
 ##download HTML
 url = 'https://www.nogizaka46.com/s/n46/diary/MEMBER/list?ima=0107&ct=48006/s/n46/diary/detail/100509?ima=2301&cd=MEMBER'
@@ -44,11 +45,20 @@ def download_pictures(blog_url,blog_index):
     
     imgTag = objSoup.select('img')
 #     print(len(imgTag))
+
     author_member = objSoup.find('p',class_ = 'bd--prof__name f--head').text
+    #if the member is don't care, then skip
+    with open('./member/nogi/concerned_member_nogi.txt', 'r', encoding='utf-8') as file:
+        concerned_members = file.read().splitlines()
+        concerned_members_no_space = [re.sub(r'\s+', '', member) for member in concerned_members]
+        author_member_no_space = re.sub(r'\s+', '', author_member)
+        if not author_member_no_space in concerned_members_no_space:
+            return
     
     blog_title = objSoup.find('h1', class_ = 'bd--hd__ttl f--head a--tx js-tdi').text
     if blog_title is None:
         blog_title = ''
+    print("running:",author_member,blog_title)
 
     dateTime = objSoup.find('p', class_ = "bd--hd__date a--tx js-tdi").text
     date = dateTime[:10]
@@ -59,7 +69,9 @@ def download_pictures(blog_url,blog_index):
     # print("data: ",data)
     # print("current_new: ",current_new)
     # print(data[0]==current_new[0],data[1]==current_new[1],data[2]==current_new[2])
-    if data[0]==current_new[0] and data[1]==current_new[1]: #we can stop here
+    author_member_no_space = re.sub(r'\s+', '', author_member)
+    current_new_member_no_space = re.sub(r'\s+', '', current_new[1])
+    if data[0]==current_new[0] and author_member_no_space==current_new_member_no_space: #we can stop here
         # print("download_complete become True")
         download_complete = True
     else:
@@ -84,7 +96,7 @@ def download_pictures(blog_url,blog_index):
         else:
             dir_path = 'blog_source/Nogizaka46/' + author_member + '/' + date + ' ' + blog_title
 
-        
+        print(blog_title)
         #the space at the end of blog_title should be remove
         dir_path = dir_path.rstrip(' .')
         

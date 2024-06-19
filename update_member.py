@@ -1,12 +1,15 @@
 import json
 import requests
 import bs4
+import shutil
 
 ## Nogi part
 ##load member's image
 def load_nogi_image(data_list):
     for member in data_list["data"]:
         print(member["name"],member["img"],"\n")
+        if member["graduation"] == "YES":
+            continue
         image_url = member["img"]
 
         # send HTTP GET request to image's URL
@@ -22,10 +25,15 @@ def load_nogi_image(data_list):
 
 
 def prepare_nogi_list(data_list):
+    filtered_data = [member["name"] for member in data_list["data"] if member["graduation"] == "NO" and member["name"] != "乃木坂46"]
     with open('member/nogi/member_list.txt', 'w', encoding='utf-8') as file:
-        for member in data_list["data"]:
-            if member["graduation"]=="NO" and not member["name"]=="乃木坂46": #乃木坂46 is don't care
-                file.write(member["name"]+"\n")
+        for member in filtered_data:
+            file.write(member+"\n")
+
+    json_data = json.dumps(filtered_data, ensure_ascii=False, indent=4)
+    with open('Blog/web crawler_Nogizaka/member_list.json', 'w', encoding='utf-8') as json_file:
+        json_file.write(json_data)
+
 
 def update_nogi():
     #update member source
