@@ -1,4 +1,5 @@
 import requests,bs4,os,json,time
+from txt_to_html_hina import prepare_html_hina
 import re
 
 url = 'https://www.hinatazaka46.com/s/official/diary/member/list?ima=0000'
@@ -34,6 +35,11 @@ def download_pictures(blog_url):
     author_members = []
     for i in author_members_raw:
         author_members.append(i.text.strip())
+
+    #record the concerned members first, avoid opening the file at each iteration
+    with open('./member/hinata/concerned_member.txt', 'r', encoding='utf-8') as file:
+        concerned_members = file.read().splitlines()
+        concerned_members_no_space = [re.sub(r'\s+', '', member) for member in concerned_members]
         
     blog_title_raw = objSoup.find_all('div', class_ = "c-blog-article__title")
     blog_titles = []
@@ -56,31 +62,40 @@ def download_pictures(blog_url):
     for k in range(len(blog_tags)):
         imgTag = blog_tags[k].find_all('img')
         author_member = author_members[k]
+        #if the member is don't care, then skip
+        author_member_no_space = re.sub(r'\s+', '', author_member)
+
         blog_title = blog_titles[k]
         date = dates[k]
-        
+        print("running:",author_member,blog_title)
     
         data = [dateTime_raw[k].text.strip(),author_member,blog_title]
-        if data == current_new: #we can stop here
+        author_member_no_space = re.sub(r'\s+', '', author_member)
+        current_new_member_no_space = re.sub(r'\s+', '', current_new[1])
+        if data[0]==current_new[0] and author_member_no_space==current_new_member_no_space: #we can stop here
             download_complete = True
         else:
+            #if the member is don't care, then skip
+            if not author_member_no_space in concerned_members_no_space:
+                continue
             #blog_title may not a good directory name
             blog_title = blog_title[:150]
             special_char = r'/\:*?"<>|'
             for i in special_char:
                 blog_title = blog_title.replace(i,'')
 
-            dir_path_member = './Hinatazaka46/' + author_member
-            dir_path = './Hinatazaka46/' + author_member + '/' + date + ' ' + blog_title
+            dir_path_member = 'blog_source/Hinatazaka46/' + author_member
+            dir_path = 'blog_source/Hinatazaka46/' + author_member + '/' + date + ' ' + blog_title
 
             #the space at the end of blog_title should be remove
             dir_path = dir_path.rstrip(' .')
+            os.makedirs(dir_path_member,exist_ok=True)
 
-            if os.path.exists(dir_path_member) == False:
-                os.mkdir(dir_path_member)
+            # if os.path.exists(dir_path_member) == False:
+            #     os.mkdir(dir_path_member)
             if os.path.exists(dir_path) == False:
                 os.mkdir(dir_path)
-                if len(imgTag) > 0 :
+                if len(imgTag) >= 0 : # > 0
                     for i in range(len(imgTag)):
                         imgUrl = imgTag[i].get('src')
 
@@ -102,6 +117,7 @@ def download_pictures(blog_url):
 
                         except:
                             print(current_page,k+1,'新的未知錯誤出現! 可能是異常個案',author_member,blog_title)
+                    prepare_html_hina(blog_tags[k],data,dates[k])
             else:
                 print('看到重複的部落格了')
 
@@ -127,26 +143,41 @@ def update_current_new(current_new_url):
     
     current_new_data = [dateTime,author_member,blog_title]
     
-    fn = 'current_new.json'
+    fn = 'blog_source/Hinatazaka46/current_new.json'
     with open(fn,'w',encoding='utf-8') as obj:
         json.dump(current_new_data,obj,ensure_ascii=False)
 
-def download_blogs(current_objSoup):
-    global current_new,current_page,download_complete
-    blogData = current_objSoup.find_all('a',class_='bl--card js-pos a--op hv--thumb')
+# def download_blogs(current_objSoup):
+#     global current_new,current_page,download_complete
+#     blogData = current_objSoup.find_all('a',class_='bl--card js-pos a--op hv--thumb')
     
-    for i in range(len(blogData)):
-        link = blogData[i]['href']
-        blog_url = url[:26] + link
+#     for i in range(len(blogData)):
+#         link = blogData[i]['href']
+#         blog_url = url[:26] + link
         
-        if not download_complete:
-            download_pictures(blog_url,i)
+#         if not download_complete:
+#             download_pictures(blog_url,i)
         
-        if current_page == 1 and i == 0: #always update first
-            update_current_new(blog_url)
+#         if current_page == 1 and i == 0: #always update first
+#             update_current_new(blog_url)
 
 ##Run!!
 def hina_crawling():
+    global current_new,current_page,download_complete
+    current_page = 1
+    current_url = url
+
+    ##get current new
+    fn = 'blog_source/Hinatazaka46/current_new.json'
+
+    try:
+        with open(fn,'r',encoding='utf-8') as fnobj:
+            current_new = json.load(fnobj)
+
+    except Exception: #the 1st run of this code
+        current_new = ''
+
+    download_complete = False
     while not download_complete:
         print(current_page)
         if current_page == 1:
@@ -154,6 +185,7 @@ def hina_crawling():
             
         html = requests.get(current_url)
         current_objSoup = bs4.BeautifulSoup(html.text,'lxml')
+        download_pictures(current_url)
         try:
             download_pictures(current_url)
         except FileExistsError as e:
@@ -168,3 +200,4 @@ def hina_crawling():
         except Exception as e:
             print( e,'可能為異常個案')
         current_url = get_next_page(current_objSoup)
+    print("Download complete!")

@@ -4,7 +4,6 @@ from PySide6.QtWidgets import QApplication,QFileDialog,QLabel,QScrollArea,QVBoxL
 from PySide6.QtCore import Qt,QCoreApplication
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from PIL import Image, ImageQt
-from txt_to_html import txt_to_html
 
 class nogi_member_window(QMainWindow):
     def __init__(self, parent=None):
@@ -31,7 +30,7 @@ class nogi_member_window(QMainWindow):
         # self.member_lbls = {}
         posi_x = 10
         posi_y = 10
-        with open("member/nogi/concerned_member_nogi.txt", "r", encoding="utf-8") as file:
+        with open("member/nogi/concerned_member.txt", "r", encoding="utf-8") as file:
             concerned_members = file.read()
         with open("member/nogi/member_list.txt", 'r', encoding='utf-8') as file:
             for line in file:
@@ -84,7 +83,7 @@ class nogi_member_window(QMainWindow):
             self.lbl_name.setStyleSheet( "color: red;")
 
     def save_concerned_member(self):
-        with open('member/nogi/concerned_member_nogi.txt', 'w', encoding='utf-8') as file:
+        with open('member/nogi/concerned_member.txt', 'w', encoding='utf-8') as file:
             for child in self.member_widget.findChildren(QLabel):
                 lbl_name = child.objectName() #ex.遠藤 さくらlbl
                 self.lbl_name = self.member_widget.findChild(QLabel, lbl_name)
@@ -127,7 +126,7 @@ class hina_member_window(QMainWindow):
         # self.member_lbls = {}
         posi_x = 10
         posi_y = 10
-        with open("member/hinata/concerned_member_hinata.txt", "r", encoding="utf-8") as file:
+        with open("member/hinata/concerned_member.txt", "r", encoding="utf-8") as file:
             concerned_members = file.read()
         with open("member/hinata/member_list.txt", 'r', encoding='utf-8') as file:
             for line in file:
@@ -180,7 +179,7 @@ class hina_member_window(QMainWindow):
             self.lbl_name.setStyleSheet( "color: red;")
 
     def save_concerned_member(self):
-        with open('member/hinata/concerned_member_hinata.txt', 'w', encoding='utf-8') as file:
+        with open('member/hinata/concerned_member.txt', 'w', encoding='utf-8') as file:
             for child in self.member_widget.findChildren(QLabel):
                 lbl_name = child.objectName() #ex.遠藤 さくらlbl
                 self.lbl_name = self.member_widget.findChild(QLabel, lbl_name)
@@ -219,7 +218,7 @@ class saku_member_window(QMainWindow):
         # self.member_lbls = {}
         posi_x = 10
         posi_y = 10
-        with open("member/sakura/concerned_member_sakura.txt", "r", encoding="utf-8") as file:
+        with open("member/sakura/concerned_member.txt", "r", encoding="utf-8") as file:
             concerned_members = file.read()
         with open("member/sakura/member_list.txt", 'r', encoding='utf-8') as file:
             for line in file:
@@ -272,7 +271,7 @@ class saku_member_window(QMainWindow):
             self.lbl_name.setStyleSheet( "color: red;")
 
     def save_concerned_member(self):
-        with open('member/sakura/concerned_member_sakura.txt', 'w', encoding='utf-8') as file:
+        with open('member/sakura/concerned_member.txt', 'w', encoding='utf-8') as file:
             for child in self.member_widget.findChildren(QLabel):
                 lbl_name = child.objectName() #ex.遠藤 さくらlbl
                 self.lbl_name = self.member_widget.findChild(QLabel, lbl_name)

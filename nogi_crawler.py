@@ -1,5 +1,5 @@
 import requests,bs4,os,json,time
-from txt_to_html import resize_pictures,prepare_html
+from txt_to_html_nogi import prepare_html_nogi
 import re
 
 ##download HTML
@@ -48,12 +48,10 @@ def download_pictures(blog_url,blog_index):
 
     author_member = objSoup.find('p',class_ = 'bd--prof__name f--head').text
     #if the member is don't care, then skip
-    with open('./member/nogi/concerned_member_nogi.txt', 'r', encoding='utf-8') as file:
+    with open('./member/nogi/concerned_member.txt', 'r', encoding='utf-8') as file:
         concerned_members = file.read().splitlines()
         concerned_members_no_space = [re.sub(r'\s+', '', member) for member in concerned_members]
         author_member_no_space = re.sub(r'\s+', '', author_member)
-        if not author_member_no_space in concerned_members_no_space:
-            return
     
     blog_title = objSoup.find('h1', class_ = 'bd--hd__ttl f--head a--tx js-tdi').text
     if blog_title is None:
@@ -75,6 +73,9 @@ def download_pictures(blog_url,blog_index):
         # print("download_complete become True")
         download_complete = True
     else:
+        #if the member is don't care, then skip
+        if not author_member_no_space in concerned_members_no_space:
+            return
         #blog_title may not a good directory name
         blog_title = blog_title[:150]
         special_char = r'/\:*?"<>|'
@@ -104,7 +105,7 @@ def download_pictures(blog_url,blog_index):
         print(dir_path)
         if os.path.exists(dir_path) == False:
             os.makedirs(dir_path)
-            if len(imgTag) > 0 :
+            if len(imgTag) >= 0 :
                 for i in range(len(imgTag)):
                     imgUrl = imgTag[i].get('src')
 
@@ -159,7 +160,7 @@ def download_blogs(current_objSoup):
         if not download_complete:
             download_pictures(blog_url,i)
             if not download_complete: #it may be True after running download_pictures()
-                prepare_html(blog_url)
+                prepare_html_nogi(blog_url)
         else:
             break
 

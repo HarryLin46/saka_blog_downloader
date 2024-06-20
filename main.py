@@ -6,7 +6,8 @@ from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtCore import QThread, Signal, Slot
 
 from PIL import Image, ImageQt
-from txt_to_html import txt_to_html,prepare_html,resize_pictures
+from txt_to_html_nogi import resize_pictures_nogi #,txt_to_html_nogi,prepare_html
+from txt_to_html_hina import resize_pictures_hina
 
 from member_window import nogi_member_window,hina_member_window,saku_member_window
 
@@ -212,7 +213,7 @@ class MainWindow:
                 html_content = file.read()
             os.chdir(os.path.join(blogs_root,blogs[0]))
             current_showing = os.getcwd()
-            html_content = resize_pictures(html_content)
+            html_content = resize_pictures_nogi(html_content)
             self.nogi_blog.setTextFormat(Qt.TextFormat.RichText)
             self.nogi_blog.setText(html_content)
             self.nogi_scroll.verticalScrollBar().setValue(0)
@@ -225,7 +226,7 @@ class MainWindow:
                 html_content = file.read()
             os.chdir(os.path.join(blogs_root,blogs[0]))
             current_showing = os.getcwd()
-            html_content = resize_pictures(html_content)
+            html_content = resize_pictures_hina(html_content)
             self.hina_blog.setTextFormat(Qt.TextFormat.RichText)
             self.hina_blog.setText(html_content)
             self.hina_scroll.verticalScrollBar().setValue(0)
