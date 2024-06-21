@@ -8,6 +8,7 @@ from PySide6.QtCore import QThread, Signal, Slot
 from PIL import Image, ImageQt
 from txt_to_html_nogi import resize_pictures_nogi #,txt_to_html_nogi,prepare_html
 from txt_to_html_hina import resize_pictures_hina
+from txt_to_html_saku import resize_pictures_saku
 
 from member_window import nogi_member_window,hina_member_window,saku_member_window
 
@@ -17,6 +18,7 @@ from update_member import update_nogi,update_hinata,update_sakura
 
 from nogi_crawler import nogi_crawling
 from hina_crawler import hina_crawling
+from saku_crawler import saku_crawling
 
 class Worker(QThread):
     finished = Signal()
@@ -239,7 +241,7 @@ class MainWindow:
                 html_content = file.read()
             os.chdir(os.path.join(blogs_root,blogs[0]))
             current_showing = os.getcwd()
-            html_content = resize_pictures(html_content)
+            html_content = resize_pictures_saku(html_content)
             self.saku_blog.setTextFormat(Qt.TextFormat.RichText)
             self.saku_blog.setText(html_content)
             self.saku_scroll.verticalScrollBar().setValue(0)

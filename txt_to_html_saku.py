@@ -6,7 +6,7 @@ import tempfile
 import requests,bs4
 import time
 
-def resize_pictures_nogi(original_html): 
+def resize_pictures_saku(original_html): 
     # find all imgs
     img_tags = re.findall(r'<img src=[\'"](.*?)[\'"]', original_html)
 
@@ -73,7 +73,7 @@ def txt_to_html_nogi(file_path):
     return new_html_content
 
 
-def prepare_html_nogi(url): #we need to modify the link of the images
+def prepare_html_saku(url): #we need to modify the link of the images
     # with open(html_path, 'r', encoding='utf-8') as file:
     #     raw_html = file.read()
     html = requests.get(url)
@@ -81,22 +81,25 @@ def prepare_html_nogi(url): #we need to modify the link of the images
     objSoup = bs4.BeautifulSoup(html.text,'lxml')
 
 
-    author_member = objSoup.find('p',class_ = 'bd--prof__name f--head').text
+    author_member = objSoup.find('p', class_ = "name").text
     #if the member is don't care, then skip
-    with open('./member/nogi/concerned_member.txt', 'r', encoding='utf-8') as file:
+    with open('./member/sakura/concerned_member.txt', 'r', encoding='utf-8') as file:
         concerned_members = file.read().splitlines()
         concerned_members_no_space = [re.sub(r'\s+', '', member) for member in concerned_members]
         author_member_no_space = re.sub(r'\s+', '', author_member)
         if not author_member_no_space in concerned_members_no_space:
             return
 
-    blog_title = objSoup.find('h1', class_ = 'bd--hd__ttl f--head a--tx js-tdi').text
+    blog_title = objSoup.find('h1', class_ = "title").text
     if blog_title is None:
         blog_title = ''
-
-    dateTime = objSoup.find('p', class_ = "bd--hd__date a--tx js-tdi").text
-    date = dateTime[:10]
-    date = date.replace('.','')
+        
+    dateTime_raw = objSoup.find_all('p', class_ = "date wf-a")
+    # print("dateTime_raw:",dateTime_raw)
+    # dateTime = dateTime_raw[1].text.split('/')
+    dateTime = dateTime_raw[1].text.replace('/','.')
+    # date = dateTime[0] + dateTime[1] + dateTime[2][:2]
+    date =  dateTime[:4] + dateTime[5:7] + dateTime[8:10]
     
     data = [dateTime,author_member,blog_title]
 
@@ -109,7 +112,7 @@ def prepare_html_nogi(url): #we need to modify the link of the images
     for i in special_char:
         blog_title = blog_title.replace(i,'')
 
-    dir_path_member = 'blog_source/Nogizaka46/' + author_member
+    dir_path_member = 'blog_source/Sakurazaka46/' + author_member
     
     if author_member[-5:] == '期生リレー':
         member = blog_title.split()[-1]
@@ -117,26 +120,27 @@ def prepare_html_nogi(url): #we need to modify the link of the images
             member = ''.join(blog_title.split()[-2:])
             if not member in member_list:
                 print('成員名字找錯')
-        dir_path = 'blog_source/Nogizaka46/' + author_member + '/' + member
-        os.makedirs(dir_path,exist_ok=True)
+        # dir_path = 'blog_source/Sakurazaka46/' + author_member + '/' + member
             
-        dir_path = 'blog_source/Nogizaka46/' + author_member + '/' + member + '/' + date + ' ' + blog_title
+        dir_path = 'blog_source/Sakurazaka46/' + author_member + '/' + member + '/' + date + ' ' + blog_title
     else:
-        dir_path = 'blog_source/Nogizaka46/' + author_member + '/' + date + ' ' + blog_title
+        dir_path = 'blog_source/Sakurazaka46/' + author_member + '/' + date + ' ' + blog_title
 
     
     #the space at the end of blog_title should be remove
     dir_path = dir_path.rstrip(' .')
+    # os.makedirs(dir_path,exist_ok=True)
     # print(dir_path)
 
-    article = objSoup.find('div', class_ ="bd--edit")
-    
+    article = objSoup.find('div', class_ ="box-article")
     img_idx=0
     img_types = ['.jpg','.png', '.tif']#file could be .jpg, .png, .tif
+    # print(len(article.find_all("img")))
     for img_tag in article.find_all("img"):
         for img_type in img_types:
             img_path = os.path.join(dir_path,f"{str(img_idx).zfill(2)}{img_type}")
             if os.path.isfile(img_path):
+                # print("success:",img_path)
                 img_tag['src'] = f"{str(img_idx).zfill(2)}{img_type}"
                 break
         img_idx+=1

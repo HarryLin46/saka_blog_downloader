@@ -185,7 +185,7 @@ def hina_crawling():
             
         html = requests.get(current_url)
         current_objSoup = bs4.BeautifulSoup(html.text,'lxml')
-        download_pictures(current_url)
+        # download_pictures(current_url)
         try:
             download_pictures(current_url)
         except FileExistsError as e:
