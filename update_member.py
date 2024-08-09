@@ -2,6 +2,7 @@ import json
 import requests
 import bs4
 import shutil
+import os
 
 ## Nogi part
 ##load member's image
@@ -29,10 +30,7 @@ def prepare_nogi_list(data_list):
     with open('member/nogi/member_list.txt', 'w', encoding='utf-8') as file:
         for member in filtered_data:
             file.write(member+"\n")
-
-    json_data = json.dumps(filtered_data, ensure_ascii=False, indent=4)
-    with open('Blog/web crawler_Nogizaka/member_list.json', 'w', encoding='utf-8') as json_file:
-        json_file.write(json_data)
+            os.makedirs(os.path.join("blog_source/Nogizaka46",member),exist_ok=True)#create member's file for convenience
 
 
 def update_nogi():
@@ -79,7 +77,9 @@ def prepare_hinata_list(member_list):
             names = member.find_all('div',class_ = "c-member__name")
             name = names[0].text.strip() #it has space at front and end, use "strip" to remove
             file.write(f"{name}\n")
+            os.makedirs(os.path.join("blog_source/Hinatazaka46",name),exist_ok=True)#create member's file for convenience
         file.write("ポカ"+"\n") #hard code the blue bird
+        os.makedirs(os.path.join("blog_source/Hinatazaka46","ポカ"),exist_ok=True)#create member's file for convenience
 
 def update_hinata():
     url = "https://www.hinatazaka46.com/s/official/search/artist?ima=0000"
@@ -125,6 +125,8 @@ def prepare_sakura_list(member_list):
             names = member.find_all('p',class_ = "name")
             name = names[0].text
             file.write(f"{name}\n")
+            os.makedirs(os.path.join("blog_source/Sakurazaka46",name),exist_ok=True)#create member's file for convenience
+            
 
 def update_sakura():
     url = "https://sakurazaka46.com/s/s46/search/artist?ima=0000&display=syllabary"

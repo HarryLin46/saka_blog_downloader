@@ -209,43 +209,52 @@ class MainWindow:
 
         if current_idx==0: #it's nogi
             blogs_root = os.path.join("blog_source/Nogizaka46/",select_mem) #ex.blog_source/Nogizaka46/遠藤さくら
-            blogs = os.listdir(blogs_root)
-            blog_html = os.path.join(blogs_root,blogs[0]+"/","blog_article.html") #choose the first/newest blog
-            with open(blog_html, 'r', encoding='utf-8') as file:
-                html_content = file.read()
-            os.chdir(os.path.join(blogs_root,blogs[0]))
-            current_showing = os.getcwd()
-            html_content = resize_pictures_nogi(html_content)
-            self.nogi_blog.setTextFormat(Qt.TextFormat.RichText)
-            self.nogi_blog.setText(html_content)
-            self.nogi_scroll.verticalScrollBar().setValue(0)
-            os.chdir("../../../../")
+            try: #member may have no blog to show, or even haven't setup a file
+                blogs = os.listdir(blogs_root)
+                blog_html = os.path.join(blogs_root,blogs[0]+"/","blog_article.html") #choose the first/newest blog
+                with open(blog_html, 'r', encoding='utf-8') as file:
+                    html_content = file.read()
+                os.chdir(os.path.join(blogs_root,blogs[0]))
+                current_showing = os.getcwd()
+                html_content = resize_pictures_nogi(html_content)
+                self.nogi_blog.setTextFormat(Qt.TextFormat.RichText)
+                self.nogi_blog.setText(html_content)
+                self.nogi_scroll.verticalScrollBar().setValue(0)
+                os.chdir("../../../../")
+            except:#indeed the member has no blog to show
+                self.nogi_blog.setText("No Data!!")
         elif current_idx==1: #it's hinata
             blogs_root = os.path.join("blog_source/Hinatazaka46/",select_mem) #ex.blog_source/Nogizaka46/遠藤さくら
-            blogs = os.listdir(blogs_root)
-            blog_html = os.path.join(blogs_root,blogs[0]+"/","blog_article.html") #choose the first/newest blog
-            with open(blog_html, 'r', encoding='utf-8') as file:
-                html_content = file.read()
-            os.chdir(os.path.join(blogs_root,blogs[0]))
-            current_showing = os.getcwd()
-            html_content = resize_pictures_hina(html_content)
-            self.hina_blog.setTextFormat(Qt.TextFormat.RichText)
-            self.hina_blog.setText(html_content)
-            self.hina_scroll.verticalScrollBar().setValue(0)
-            os.chdir("../../../../")
+            try: #member may have no blog to show, or even haven't setup a file
+                blogs = os.listdir(blogs_root)
+                blog_html = os.path.join(blogs_root,blogs[0]+"/","blog_article.html") #choose the first/newest blog
+                with open(blog_html, 'r', encoding='utf-8') as file:
+                    html_content = file.read()
+                os.chdir(os.path.join(blogs_root,blogs[0]))
+                current_showing = os.getcwd()
+                html_content = resize_pictures_hina(html_content)
+                self.hina_blog.setTextFormat(Qt.TextFormat.RichText)
+                self.hina_blog.setText(html_content)
+                self.hina_scroll.verticalScrollBar().setValue(0)
+                os.chdir("../../../../")
+            except:#indeed the member has no blog to show
+                self.hina_blog.setText("No Data!!")
         elif current_idx==2: #it's sakura
             blogs_root = os.path.join("blog_source/Sakurazaka46/",select_mem) #ex.blog_source/Nogizaka46/遠藤さくら
-            blogs = os.listdir(blogs_root)
-            blog_html = os.path.join(blogs_root,blogs[0]+"/","blog_article.html") #choose the first/newest blog
-            with open(blog_html, 'r', encoding='utf-8') as file:
-                html_content = file.read()
-            os.chdir(os.path.join(blogs_root,blogs[0]))
-            current_showing = os.getcwd()
-            html_content = resize_pictures_saku(html_content)
-            self.saku_blog.setTextFormat(Qt.TextFormat.RichText)
-            self.saku_blog.setText(html_content)
-            self.saku_scroll.verticalScrollBar().setValue(0)
-            os.chdir("../../../../")
+            try: #member may have no blog to show, or even haven't setup a file
+                blogs = os.listdir(blogs_root)
+                blog_html = os.path.join(blogs_root,blogs[0]+"/","blog_article.html") #choose the first/newest blog
+                with open(blog_html, 'r', encoding='utf-8') as file:
+                    html_content = file.read()
+                os.chdir(os.path.join(blogs_root,blogs[0]))
+                current_showing = os.getcwd()
+                html_content = resize_pictures_saku(html_content)
+                self.saku_blog.setTextFormat(Qt.TextFormat.RichText)
+                self.saku_blog.setText(html_content)
+                self.saku_scroll.verticalScrollBar().setValue(0)
+                os.chdir("../../../../")
+            except:#indeed the member has no blog to show
+                self.saku_blog.setText("No Data!!")
         # print(blogs)
 
     def next_blog(self):
